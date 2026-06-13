@@ -1,0 +1,64 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+enum SeatStatus {
+  FREE
+  OCCUPIED
+  AWAY
+}
+
+enum SessionStatus {
+  ACTIVE
+  EXPIRED
+  COMPLETED
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  sessions  Session[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([email])
+}
+
+model Seat {
+  id        String     @id // e.g., "A1", "B4"
+  zone      String     // e.g., "North Wing", "Quiet Floor"
+  status    SeatStatus @default(FREE)
+  qrToken   String     @unique
+  sessions  Session[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([qrToken])
+  @@index([status])
+}
+
+model Session {
+  id                String        @id @default(uuid())
+  userId            String
+  seatId            String
+  status            SessionStatus @default(ACTIVE)
+  checkInTime       DateTime      @default(now())
+  checkOutTime      DateTime?
+  terminationReason String?       // e.g., "User", "Auto-Expired", "Librarian_Reset"
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  seat Seat @relation(fields: [seatId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([seatId])
+  @@index([status])
+}

@@ -1,0 +1,20 @@
+FROM node:18-alpine
+
+# Install OpenSSL 3.0.x for Prisma
+RUN apk add --no-cache openssl
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+# Install dev and production dependencies
+RUN npm install
+
+COPY . .
+
+# Run prisma client generator inside alpine environment
+RUN npx prisma generate
+
+EXPOSE 3001
+
+CMD ["npm", "run", "dev"]
