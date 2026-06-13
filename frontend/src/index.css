@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* ────────────────────────────────────────────────────────────
+   BASE RESET & DOCUMENT ROOT
+   ──────────────────────────────────────────────────────────── */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #111318;
+  color: #e2e2e9;
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ────────────────────────────────────────────────────────────
+   GLASSMORPHIC BACKDROP UTILITY
+   ──────────────────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(26, 28, 34, 0.6) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ────────────────────────────────────────────────────────────
+   SEAT NODE — FREE STATE
+   CSS hover "heat aura" ripple ring expanding outward
+   ──────────────────────────────────────────────────────────── */
+.seat-node-free {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ambient breathing glow for Free seats */
+@keyframes free-ambient-breathe {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(106, 168, 79, 0.15)); }
+  50%      { filter: drop-shadow(0 0 10px rgba(106, 168, 79, 0.35)); }
+}
+.seat-node-free .seat-surface {
+  animation: free-ambient-breathe 4s ease-in-out infinite;
+}
+
+/* The heat aura ripple ring — invisible by default, scales up on hover */
+@keyframes heat-aura-ripple {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+.seat-node-free .seat-aura-ring {
+  opacity: 0;
+  transform-origin: center;
+  transition: opacity 0.2s ease;
+}
+
+.seat-node-free:hover .seat-aura-ring {
+  animation: heat-aura-ripple 0.85s cubic-bezier(0.0, 0, 0.2, 1) forwards;
+}
+
+.seat-node-free:hover .seat-surface {
+  filter: drop-shadow(0 0 14px rgba(106, 168, 79, 0.55)) brightness(1.08);
+}
+
+/* ────────────────────────────────────────────────────────────
+   SEAT NODE — OCCUPIED STATE
+   Subtle static red glow, no animation needed
+   ──────────────────────────────────────────────────────────── */
+.seat-node-occupied {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes occupied-subtle-pulse {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(200, 60, 60, 0.1)); }
+  50%      { filter: drop-shadow(0 0 6px rgba(200, 60, 60, 0.25)); }
+}
+.seat-node-occupied .seat-surface {
+  animation: occupied-subtle-pulse 5s ease-in-out infinite;
+}
+
+/* ────────────────────────────────────────────────────────────
+   SEAT NODE — AWAY STATE
+   Animated stroke-dasharray marching ants border
+   The dasharray animation is driven via requestAnimationFrame
+   in the React component, but we define the transition here.
+   ──────────────────────────────────────────────────────────── */
+.seat-node-away {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes away-border-march {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -40; }
+}
+
+.seat-node-away .seat-border-dashed {
+  stroke-dasharray: 8 6;
+  animation: away-border-march 1.2s linear infinite;
+}
+
+@keyframes away-amber-pulse {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(210, 160, 30, 0.2)); }
+  50%      { filter: drop-shadow(0 0 12px rgba(210, 160, 30, 0.5)); }
+}
+.seat-node-away .seat-surface {
+  animation: away-amber-pulse 2s ease-in-out infinite;
+}
+
+/* Countdown text ticker glow */
+.seat-node-away .countdown-text {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+/* ────────────────────────────────────────────────────────────
+   ZONE VIEWPORT CONTAINERS
+   Distinct visual panels for the two library wings
+   ──────────────────────────────────────────────────────────── */
+.zone-viewport {
+  transition: box-shadow 0.4s ease;
+}
+
+.zone-viewport:hover {
+  box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.02);
+}
+
+/* ────────────────────────────────────────────────────────────
+   CUSTOM SCROLLBARS
+   ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111318;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3139;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3e4450;
+}
