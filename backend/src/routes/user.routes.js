@@ -7,6 +7,7 @@ const router = express.Router();
 
 const registerSchema = {
   body: Joi.object().keys({
+    userId: Joi.string().guid({ version: 'uuidv4' }).required(),
     name: Joi.string().required().min(2).max(50),
     email: Joi.string().required().email(),
   }),

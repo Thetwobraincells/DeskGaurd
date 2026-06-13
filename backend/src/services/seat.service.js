@@ -8,14 +8,21 @@ const SEAT_AWAY_TTL = 1200;     // 20 minutes in seconds
 
 /**
  * Register guest user if not already exists
+ * @param {string} userId
  * @param {string} name
  * @param {string} email
  */
-async function registerGuestUser(name, email) {
+async function registerGuestUser(userId, name, email) {
+  // Check if a user with the same email already exists under a different ID
+  const existingUser = await prisma.user.findUnique({ where: { email } });
+  if (existingUser && existingUser.id !== userId) {
+    throw new ApiError(400, 'A user with this email is already registered under a different ID.');
+  }
+
   return await prisma.user.upsert({
-    where: { email },
-    update: {},
-    create: { name, email },
+    where: { id: userId },
+    update: { name, email },
+    create: { id: userId, name, email },
   });
 }
 
